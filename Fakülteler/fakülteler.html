@@ -17,7 +17,7 @@
             
             <nav class="nav-menu">
                 <div class="nav-item">
-                    <a href="../Ana sayfa/anasayfa.html" class="nav-link">Anasayfa</a>
+                    <a href="../campusumer-anasayfa/anasayfa.html" class="nav-link">Anasayfa</a>
                 </div>
                 <div class="nav-item">
                     <a href="../Dersler/dersler.html" class="nav-link">Dersler</a>
@@ -43,6 +43,34 @@
             <div class="hero-content">
                 <h1>Fakülteler</h1>
                 <p>Türkiye'nin önde gelen üniversitelerinin fakültelerini keşfedin ve yaz dersi seçeneklerini inceleyin.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Öğrenci Filtreleme Section -->
+    <section id="studentFilterSection" class="filter-section" style="display: none; background: #f8f9fa; padding: 40px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; color: #333;">🔍 Fakülte Filtrele</h2>
+                <p style="color: #666; font-size: 0.95rem;">Üniversiteye göre fakülteleri görüntüleyin</p>
+            </div>
+            <div class="filter-form-container" style="max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
+                <form id="filterForm" class="filter-form">
+                    <div class="form-group" style="margin-bottom: 1.2rem;">
+                        <label for="filterUniversity" style="font-size: 0.92rem; color: #495057; font-weight: 600;">Üniversite Seçin</label>
+                        <select id="filterUniversity" name="filterUniversity" style="font-size: 0.95rem;">
+                            <option value="">Tüm Üniversiteler</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 0.8rem;">
+                        <button type="submit" class="filter-submit-btn">
+                            🔍 Fakülteleri Göster
+                        </button>
+                        <button type="button" onclick="clearFilter()" class="filter-clear-btn">
+                            🗑️ Temizle
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
@@ -95,7 +123,7 @@
                 </div>
                 <div class="footer-section">
                     <h3>Hızlı Bağlantılar</h3>
-                    <a href="../Ana sayfa/anasayfa.html">Ana Sayfa</a>
+                    <a href="../campusumer-anasayfa/anasayfa.html">Ana Sayfa</a>
                     <a href="../Üniversiteler/Üniversitler.html">Üniversiteler</a>
                     <a href="../Dersler/dersler.html">Dersler</a>
                     <a href="../Hakkımızda/Hakkımızda.html">Hakkımızda</a>
@@ -133,9 +161,11 @@
             
             if (userStr && userToken) {
                 currentUser = JSON.parse(userStr);
+                console.log('✅ Kullanıcı girişi tespit edildi:', currentUser.userType);
                 initializePage();
             } else {
                 // Giriş yapılmamışsa, tüm fakülteleri göster
+                console.log('👤 Ziyaretçi modu - Tüm fakülteler gösteriliyor');
                 loadFaculties();
             }
         });
@@ -148,9 +178,20 @@
                 document.getElementById('sectionSubtitle').textContent = currentUser.universityName ? 
                     `${currentUser.universityName} - Fakülteler` : 'Eklediğiniz fakülteler';
                 setupAcademicianFeatures();
+                loadFaculties();
+            } else if (currentUser.userType === 'student') {
+                // Öğrenci arayüzü - Filtreleme göster
+                document.getElementById('studentFilterSection').style.display = 'block';
+                document.getElementById('sectionTitle').textContent = 'Fakülteler';
+                document.getElementById('sectionSubtitle').textContent = 'Üniversitelere göre fakülteleri filtreleyin';
+                setupStudentFilter();
+                // Fakülteleri hemen yükleme, filtreleme sonrası yüklenecek
+                document.getElementById('facultiesGrid').innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666; font-size: 1.05rem;">👆 Yukarıdaki filtreden üniversite seçerek fakülteleri görüntüleyin</p>';
+                document.getElementById('loadingMessage').style.display = 'none';
+            } else {
+                // Ziyaretçi - Tüm fakülteleri göster
+                loadFaculties();
             }
-            
-            loadFaculties();
         }
 
         function setupAcademicianFeatures() {
@@ -202,7 +243,37 @@
             });
         }
 
-        async function loadFaculties() {
+        async function setupStudentFilter() {
+            // Üniversiteleri yükle
+            try {
+                const response = await fetch(`${API_URL}/universities`);
+                const data = await response.json();
+                
+                if (data.success && data.universities) {
+                    const select = document.getElementById('filterUniversity');
+                    data.universities.forEach(uni => {
+                        const option = document.createElement('option');
+                        option.value = uni.id;
+                        option.textContent = uni.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Üniversiteler yüklenirken hata:', error);
+            }
+
+            // Filtreleme formunu dinle
+            document.getElementById('filterForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                applyFilter();
+            });
+        }
+
+        async function applyFilter() {
+            const universityId = document.getElementById('filterUniversity').value;
+
+            console.log('Filtreleme yapılıyor:', { universityId });
+            
             const loadingDiv = document.getElementById('loadingMessage');
             const gridDiv = document.getElementById('facultiesGrid');
             
@@ -211,19 +282,67 @@
 
             try {
                 let url = `${API_URL}/faculties`;
+                
+                if (universityId) {
+                    url += `?universityId=${universityId}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    const faculties = data.faculties;
+                    
+                    if (faculties.length > 0) {
+                        displayFaculties(faculties);
+                    } else {
+                        gridDiv.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666; font-size: 1.1rem;">🔍 Bu üniversiteye ait fakülte bulunamadı.</p>';
+                    }
+                } else {
+                    gridDiv.innerHTML = '<p class="error-message" style="grid-column: 1/-1; text-align: center; color: #dc3545;">Fakülteler yüklenirken bir hata oluştu</p>';
+                }
+            } catch (error) {
+                console.error('Fakülte yükleme hatası:', error);
+                gridDiv.innerHTML = '<p class="error-message" style="grid-column: 1/-1; text-align: center; color: #dc3545;">Sunucuya bağlanılamadı</p>';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        function clearFilter() {
+            document.getElementById('filterForm').reset();
+            const gridDiv = document.getElementById('facultiesGrid');
+            gridDiv.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666; font-size: 1.05rem;">👆 Yukarıdaki filtreden üniversite seçerek fakülteleri görüntüleyin</p>';
+            document.getElementById('loadingMessage').style.display = 'none';
+        }
+
+        async function loadFaculties(customUrl = null) {
+            const loadingDiv = document.getElementById('loadingMessage');
+            const gridDiv = document.getElementById('facultiesGrid');
+            
+            loadingDiv.style.display = 'block';
+            gridDiv.innerHTML = '';
+
+            try {
+                let url = customUrl || `${API_URL}/faculties`;
                 let headers = { 'Content-Type': 'application/json' };
 
                 // Eğer akademisyen ise, kendi üniversitesinin fakültelerini getir
-                if (currentUser && currentUser.userType === 'academician' && currentUser.universityId) {
+                if (!customUrl && currentUser && currentUser.userType === 'academician' && currentUser.universityId) {
                     url = `${API_URL}/faculties?universityId=${currentUser.universityId}`;
                     headers['Authorization'] = `Bearer ${userToken}`;
                 }
 
+                console.log('Fakülteler yükleniyor:', url);
                 const response = await fetch(url, { headers });
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    displayFaculties(data.faculties);
+                    if (data.faculties && data.faculties.length > 0) {
+                        displayFaculties(data.faculties);
+                    } else {
+                        gridDiv.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666; font-size: 1.1rem;">🔍 Arama kriterlerinize uygun fakülte bulunamadı. Lütfen farklı bir filtre deneyin.</p>';
+                    }
                 } else {
                     gridDiv.innerHTML = '<p class="error-message" style="grid-column: 1/-1; text-align: center; color: #dc3545;">Fakülteler yüklenirken bir hata oluştu</p>';
                 }
@@ -362,6 +481,53 @@
                 transform: translateY(-2px);
                 box-shadow: 0 10px 25px rgba(33,150,243,0.4);
             }
+            .filter-submit-btn {
+                background: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
+                color: white;
+                border: none;
+                padding: 11px 28px;
+                border-radius: 10px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 3px 12px rgba(33,150,243,0.25);
+                min-width: 180px;
+                letter-spacing: 0.3px;
+            }
+            .filter-submit-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 24px rgba(33,150,243,0.4);
+                background: linear-gradient(135deg, #1e88e5 0%, #00ACC1 100%);
+            }
+            .filter-submit-btn:active {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(33,150,243,0.3);
+            }
+            .filter-clear-btn {
+                background: white;
+                color: #6c757d;
+                border: 2px solid #dee2e6;
+                padding: 11px 24px;
+                border-radius: 10px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                min-width: 120px;
+                letter-spacing: 0.3px;
+            }
+            .filter-clear-btn:hover {
+                background: #f8f9fa;
+                border-color: #adb5bd;
+                color: #495057;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 16px rgba(108,117,125,0.15);
+            }
+            .filter-clear-btn:active {
+                transform: translateY(-1px);
+                box-shadow: 0 3px 10px rgba(108,117,125,0.1);
+            }
             .form-group {
                 margin-bottom: 1.5rem;
             }
@@ -372,20 +538,46 @@
                 margin-bottom: 0.5rem;
             }
             .form-group input,
-            .form-group textarea {
+            .form-group textarea,
+            .form-group select {
                 width: 100%;
-                padding: 12px 16px;
+                padding: 11px 16px;
                 border: 2px solid #e1e8ed;
-                border-radius: 12px;
-                font-size: 1rem;
+                border-radius: 10px;
+                font-size: 0.95rem;
                 font-family: inherit;
-                transition: all 0.3s ease;
+                transition: all 0.25s ease;
+                box-sizing: border-box;
+                background: #fafbfc;
+                color: #495057;
+                cursor: pointer;
             }
             .form-group input:focus,
-            .form-group textarea:focus {
+            .form-group textarea:focus,
+            .form-group select:focus {
                 outline: none;
                 border-color: #2196F3;
-                box-shadow: 0 0 0 3px rgba(33,150,243,0.1);
+                box-shadow: 0 0 0 4px rgba(33,150,243,0.1);
+                background: white;
+            }
+            .form-group select:hover {
+                border-color: #c8d3dd;
+                background: white;
+            }
+            @media (max-width: 768px) {
+                .form-row {
+                    grid-template-columns: 1fr !important;
+                }
+                .filter-submit-btn {
+                    min-width: 150px;
+                    padding: 10px 20px;
+                    font-size: 0.9rem;
+                }
+                .filter-clear-btn {
+                    min-width: 100px;
+                    padding: 10px 18px;
+                    font-size: 0.9rem;
+                }
             }
         `;
         document.head.appendChild(style);
