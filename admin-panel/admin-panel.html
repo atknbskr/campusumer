@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Campus Summer</title>
+    <link rel="stylesheet" href="admin-panel.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="../akademisyen-giriş/2.3.logo.png" alt="Logo" class="logo">
+                <span class="site-name">Campus Summer - Admin Paneli</span>
+            </div>
+            <div class="user-section">
+                <span id="adminName">Admin</span>
+                <button onclick="logout()" class="logout-btn">Çıkış</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="#users" class="nav-item" onclick="showSection('users')">
+                    <span>👥</span> Kullanıcılar
+                </a>
+                <a href="#courses" class="nav-item" onclick="showSection('courses')">
+                    <span>📚</span> Dersler
+                </a>
+                <a href="#universities" class="nav-item" onclick="showSection('universities')">
+                    <span>🏛️</span> Üniversiteler
+                </a>
+                <a href="#statistics" class="nav-item" onclick="showSection('statistics')">
+                    <span>📈</span> İstatistikler
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Panel -->
+        <main class="main-panel">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h1>Dashboard</h1>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>Öğrenciler</h3>
+                            <p class="stat-number" id="statStudents">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-info">
+                            <h3>Akademisyenler</h3>
+                            <p class="stat-number" id="statAcademicians">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <h3>Dersler</h3>
+                            <p class="stat-number" id="statCourses">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <h3>Favoriler</h3>
+                            <p class="stat-number" id="statFavorites">-</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏛️</div>
+                        <div class="stat-info">
+                            <h3>Üniversiteler</h3>
+                            <p class="stat-number" id="statUniversities">-</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="content-section">
+                <div class="section-header">
+                    <h1>Kullanıcı Yönetimi</h1>
+                </div>
+                
+                <!-- Edit User Modal -->
+                <div id="editUserModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Kullanıcı Düzenle</h3>
+                            <button onclick="closeEditUserModal()" class="close-btn">&times;</button>
+                        </div>
+                        <form id="editUserForm" onsubmit="updateUser(event)">
+                            <input type="hidden" id="editUserId">
+                            <input type="hidden" id="editUserType">
+                            <div class="form-group">
+                                <label>Ad *</label>
+                                <input type="text" id="editFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Soyad *</label>
+                                <input type="text" id="editLastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" id="editEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="identifierLabel">Öğrenci Numarası</label>
+                                <input type="text" id="editIdentifier">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="submit-btn">Güncelle</button>
+                                <button type="button" onclick="closeEditUserModal()" class="cancel-btn">İptal</button>
+                            </div>
+                            <div id="editUserMessage" class="form-message"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="usersList" class="table-container">
+                    <div class="loading">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- Courses Section -->
+            <section id="courses" class="content-section">
+                <div class="section-header">
+                    <h1>Ders Yönetimi</h1>
+                    <button onclick="showAddCourseForm()" class="add-btn">+ Ders Ekle</button>
+                </div>
+                
+                <!-- Add Course Form -->
+                <div id="addCourseForm" class="add-course-form" style="display: none;">
+                    <h3>Yeni Ders Ekle</h3>
+                    <form id="courseForm" onsubmit="addCourse(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ders Adı *</label>
+                                <input type="text" id="courseName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ders Kodu</label>
+                                <input type="text" id="courseCode">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select id="category">
+                                    <option value="">Seçiniz</option>
+                                    <option value="Matematik">Matematik</option>
+                                    <option value="Kimya">Kimya</option>
+                                    <option value="Bilgisayar Programlama">Bilgisayar Programlama</option>
+                                    <option value="Fizik">Fizik</option>
+                                    <option value="İngilizce">İngilizce</option>
+                                    <option value="İstatistik">İstatistik</option>
+                                    <option value="Diğer">Diğer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Akademisyen ID (Opsiyonel)</label>
+                                <input type="number" id="academicianId" placeholder="Boş bırakılabilir">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">Ders Ekle</button>
+                            <button type="button" onclick="hideAddCourseForm()" class="cancel-btn">İptal</button>
+                        </div>
+                        <div id="courseFormMessage" class="form-message"></div>
+                    </form>
+                </div>
+
+                <div id="coursesList" class="table-container">
+                    <div class="loading">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- Universities Section -->
+            <section id="universities" class="content-section">
+                <div class="section-header">
+                    <h1>Üniversite Yönetimi</h1>
+                    <button onclick="showAddUniversityForm()" class="add-btn">+ Üniversite Ekle</button>
+                </div>
+                
+                <!-- Add University Form -->
+                <div id="addUniversityForm" class="add-course-form" style="display: none;">
+                    <h3>Yeni Üniversite Ekle</h3>
+                    <form id="universityForm" onsubmit="addUniversity(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Üniversite Adı *</label>
+                                <input type="text" id="universityName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Şehir</label>
+                                <input type="text" id="universityCity">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Website</label>
+                                <input type="url" id="universityWebsite" placeholder="https://...">
+                            </div>
+                            <div class="form-group">
+                                <label>Logo URL</label>
+                                <input type="url" id="universityLogo" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>İletişim Email</label>
+                                <input type="email" id="universityEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>İletişim Telefon</label>
+                                <input type="tel" id="universityPhone">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="universityDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">Üniversite Ekle</button>
+                            <button type="button" onclick="hideAddUniversityForm()" class="cancel-btn">İptal</button>
+                        </div>
+                        <div id="universityFormMessage" class="form-message"></div>
+                    </form>
+                </div>
+
+                <div id="universitiesList" class="table-container">
+                    <div class="loading">Yükleniyor...</div>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section id="statistics" class="content-section">
+                <h1>İstatistikler</h1>
+                <div id="statisticsContent" class="stats-content">
+                    <div class="loading">Yükleniyor...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const API_URL = `${window.location.origin}/api`;
+        let userToken = null;
+        let currentUser = null;
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            userToken = localStorage.getItem('token');
+            
+            if (!userStr || !userToken) {
+                alert('Lütfen önce giriş yapın');
+                window.location.href = '../admin-giriş/admin-giriş.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userStr);
+            
+            if (currentUser.userType !== 'admin') {
+                alert('Bu sayfaya sadece adminler erişebilir');
+                window.location.href = '../website-giriş-sayfası/website-giriş-sayfası.html';
+                return;
+            }
+
+            document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            
+            // İlk yükleme
+            loadStatistics();
+            loadUsers();
+            loadCourses();
+            loadUniversities();
+        });
+
+        function showSection(sectionId) {
+            // Tüm section'ları gizle
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Tüm nav item'ları pasif yap
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Seçilen section'ı göster
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_URL}/admin/statistics`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.getElementById('statStudents').textContent = data.statistics.students;
+                    document.getElementById('statAcademicians').textContent = data.statistics.academicians;
+                    document.getElementById('statCourses').textContent = data.statistics.courses;
+                    document.getElementById('statFavorites').textContent = data.statistics.favorites;
+                    document.getElementById('statUniversities').textContent = data.statistics.universities || 0;
+                }
+            } catch (error) {
+                console.error('İstatistik yükleme hatası:', error);
+            }
+        }
+
+        async function loadUsers() {
+            const container = document.getElementById('usersList');
+            container.innerHTML = '<div class="loading">Yükleniyor...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (data.users.length === 0) {
+                        container.innerHTML = '<p>Henüz kullanıcı yok</p>';
+                        return;
+                    }
+                    
+                    let html = `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Email</th>
+                                    <th>Tip</th>
+                                    <th>Tanımlayıcı</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.users.forEach(user => {
+                        html += `
+                            <tr>
+                                <td>${user.id}</td>
+                                <td>${user.first_name} ${user.last_name}</td>
+                                <td>${user.email}</td>
+                                <td><span class="badge badge-${user.user_type}">${user.user_type}</span></td>
+                                <td>${user.identifier || '-'}</td>
+                                <td>${new Date(user.created_at).toLocaleDateString('tr-TR')}</td>
+                                <td>
+                                    ${user.id !== currentUser.id ? 
+                                        `<button onclick="editUser(${user.id}, '${user.first_name}', '${user.last_name}', '${user.email}', '${user.identifier || ''}', '${user.user_type}')" class="edit-btn">Düzenle</button>
+                                         <button onclick="deleteUser(${user.id})" class="delete-btn">Sil</button>` : 
+                                        '<span class="text-muted">Kendi hesabınız</span>'
+                                    }
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `</tbody></table>`;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p class="error">Kullanıcılar yüklenirken bir hata oluştu</p>';
+                }
+            } catch (error) {
+                console.error('Kullanıcı yükleme hatası:', error);
+                container.innerHTML = '<p class="error">Sunucuya bağlanılamadı</p>';
+            }
+        }
+
+        async function loadCourses() {
+            const container = document.getElementById('coursesList');
+            container.innerHTML = '<div class="loading">Yükleniyor...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/courses`, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (data.courses.length === 0) {
+                        container.innerHTML = '<p>Henüz ders yok</p>';
+                        return;
+                    }
+                    
+                    let html = `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ders Adı</th>
+                                    <th>Ders Kodu</th>
+                                    <th>Kategori</th>
+                                    <th>Akademisyen</th>
+                                    <th>Öğrenci Sayısı</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.courses.forEach(course => {
+                        html += `
+                            <tr>
+                                <td>${course.id}</td>
+                                <td>${course.course_name}</td>
+                                <td>${course.course_code || '-'}</td>
+                                <td>${course.category || '-'}</td>
+                                <td>${course.academician_name || 'Sistem'}</td>
+                                <td>${course.student_count || 0}</td>
+                                <td>
+                                    <button onclick="deleteCourse(${course.id})" class="delete-btn">Sil</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `</tbody></table>`;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p class="error">Dersler yüklenirken bir hata oluştu</p>';
+                }
+            } catch (error) {
+                console.error('Ders yükleme hatası:', error);
+                container.innerHTML = '<p class="error">Sunucuya bağlanılamadı</p>';
+            }
+        }
+
+        async function addCourse(event) {
+            event.preventDefault();
+            
+            const formData = {
+                courseName: document.getElementById('courseName').value.trim(),
+                courseCode: document.getElementById('courseCode').value.trim() || null,
+                category: document.getElementById('category').value || null,
+                description: document.getElementById('description').value.trim() || null,
+                academicianId: document.getElementById('academicianId').value || null
+            };
+
+            const messageDiv = document.getElementById('courseFormMessage');
+            
+            try {
+                const response = await fetch(`${API_URL}/courses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    messageDiv.textContent = 'Ders başarıyla eklendi!';
+                    messageDiv.className = 'form-message success';
+                    document.getElementById('courseForm').reset();
+                    hideAddCourseForm();
+                    loadCourses();
+                } else {
+                    messageDiv.textContent = data.message || 'Ders eklenirken bir hata oluştu';
+                    messageDiv.className = 'form-message error';
+                }
+            } catch (error) {
+                console.error('Ders ekleme hatası:', error);
+                messageDiv.textContent = 'Sunucuya bağlanılamadı';
+                messageDiv.className = 'form-message error';
+            }
+        }
+
+        async function deleteCourse(courseId) {
+            if (!confirm('Bu dersi silmek istediğinize emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/courses/${courseId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('Ders başarıyla silindi');
+                    loadCourses();
+                } else {
+                    alert(data.message || 'Ders silinirken bir hata oluştu');
+                }
+            } catch (error) {
+                console.error('Ders silme hatası:', error);
+                alert('Sunucuya bağlanılamadı');
+            }
+        }
+
+        function editUser(id, firstName, lastName, email, identifier, userType) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUserType').value = userType;
+            document.getElementById('editFirstName').value = firstName;
+            document.getElementById('editLastName').value = lastName;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editIdentifier').value = identifier;
+            
+            // Label değiştir
+            const label = document.getElementById('identifierLabel');
+            if (userType === 'student') {
+                label.textContent = 'Öğrenci Numarası';
+            } else if (userType === 'academician') {
+                label.textContent = 'Kullanıcı Adı';
+            } else {
+                label.textContent = 'Tanımlayıcı';
+            }
+            
+            document.getElementById('editUserModal').style.display = 'flex';
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+            document.getElementById('editUserMessage').textContent = '';
+            document.getElementById('editUserMessage').className = 'form-message';
+        }
+
+        async function updateUser(event) {
+            event.preventDefault();
+            
+            const userId = document.getElementById('editUserId').value;
+            const formData = {
+                firstName: document.getElementById('editFirstName').value.trim(),
+                lastName: document.getElementById('editLastName').value.trim(),
+                email: document.getElementById('editEmail').value.trim(),
+                identifier: document.getElementById('editIdentifier').value.trim() || null
+            };
+
+            const messageDiv = document.getElementById('editUserMessage');
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    messageDiv.textContent = 'Kullanıcı başarıyla güncellendi!';
+                    messageDiv.className = 'form-message success';
+                    setTimeout(() => {
+                        closeEditUserModal();
+                        loadUsers();
+                    }, 1500);
+                } else {
+                    messageDiv.textContent = data.message || 'Kullanıcı güncellenirken bir hata oluştu';
+                    messageDiv.className = 'form-message error';
+                }
+            } catch (error) {
+                console.error('Kullanıcı güncelleme hatası:', error);
+                messageDiv.textContent = 'Sunucuya bağlanılamadı';
+                messageDiv.className = 'form-message error';
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Bu kullanıcıyı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('Kullanıcı başarıyla silindi');
+                    loadUsers();
+                    loadStatistics();
+                } else {
+                    alert(data.message || 'Kullanıcı silinirken bir hata oluştu');
+                }
+            } catch (error) {
+                console.error('Kullanıcı silme hatası:', error);
+                alert('Sunucuya bağlanılamadı');
+            }
+        }
+
+        function showAddCourseForm() {
+            document.getElementById('addCourseForm').style.display = 'block';
+        }
+
+        function hideAddCourseForm() {
+            document.getElementById('addCourseForm').style.display = 'none';
+            document.getElementById('courseFormMessage').textContent = '';
+            document.getElementById('courseFormMessage').className = 'form-message';
+        }
+
+        async function loadUniversities() {
+            const container = document.getElementById('universitiesList');
+            container.innerHTML = '<div class="loading">Yükleniyor...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/universities`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (data.universities.length === 0) {
+                        container.innerHTML = '<p>Henüz üniversite yok</p>';
+                        return;
+                    }
+                    
+                    let html = `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Üniversite Adı</th>
+                                    <th>Şehir</th>
+                                    <th>Website</th>
+                                    <th>İletişim</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.universities.forEach(uni => {
+                        html += `
+                            <tr>
+                                <td>${uni.id}</td>
+                                <td>${uni.name}</td>
+                                <td>${uni.city || '-'}</td>
+                                <td>${uni.website ? `<a href="${uni.website}" target="_blank">Link</a>` : '-'}</td>
+                                <td>${uni.contact_email || uni.contact_phone || '-'}</td>
+                                <td>
+                                    <button onclick="deleteUniversity(${uni.id})" class="delete-btn">Sil</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `</tbody></table>`;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p class="error">Üniversiteler yüklenirken bir hata oluştu</p>';
+                }
+            } catch (error) {
+                console.error('Üniversite yükleme hatası:', error);
+                container.innerHTML = '<p class="error">Sunucuya bağlanılamadı</p>';
+            }
+        }
+
+        async function addUniversity(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('universityName').value.trim(),
+                city: document.getElementById('universityCity').value.trim() || null,
+                website: document.getElementById('universityWebsite').value.trim() || null,
+                logoUrl: document.getElementById('universityLogo').value.trim() || null,
+                contactEmail: document.getElementById('universityEmail').value.trim() || null,
+                contactPhone: document.getElementById('universityPhone').value.trim() || null,
+                description: document.getElementById('universityDescription').value.trim() || null
+            };
+
+            const messageDiv = document.getElementById('universityFormMessage');
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/universities`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    messageDiv.textContent = 'Üniversite başarıyla eklendi!';
+                    messageDiv.className = 'form-message success';
+                    document.getElementById('universityForm').reset();
+                    hideAddUniversityForm();
+                    loadUniversities();
+                    loadStatistics();
+                } else {
+                    messageDiv.textContent = data.message || 'Üniversite eklenirken bir hata oluştu';
+                    messageDiv.className = 'form-message error';
+                }
+            } catch (error) {
+                console.error('Üniversite ekleme hatası:', error);
+                messageDiv.textContent = 'Sunucuya bağlanılamadı';
+                messageDiv.className = 'form-message error';
+            }
+        }
+
+        async function deleteUniversity(universityId) {
+            if (!confirm('Bu üniversiteyi silmek istediğinize emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/admin/universities/${universityId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('Üniversite başarıyla silindi');
+                    loadUniversities();
+                    loadStatistics();
+                } else {
+                    alert(data.message || 'Üniversite silinirken bir hata oluştu');
+                }
+            } catch (error) {
+                console.error('Üniversite silme hatası:', error);
+                alert('Sunucuya bağlanılamadı');
+            }
+        }
+
+        function showAddUniversityForm() {
+            document.getElementById('addUniversityForm').style.display = 'block';
+        }
+
+        function hideAddUniversityForm() {
+            document.getElementById('addUniversityForm').style.display = 'none';
+            document.getElementById('universityFormMessage').textContent = '';
+            document.getElementById('universityFormMessage').className = 'form-message';
+        }
+
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../website-giriş-sayfası/website-giriş-sayfası.html';
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+

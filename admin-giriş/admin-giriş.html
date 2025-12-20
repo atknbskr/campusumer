@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Summer Admin Giriş</title>
+    <link rel="stylesheet" href="admin-giriş.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-panel">
+            <img src="../akademisyen-giriş/2.3.logo.png" alt="Campus Summer Logo" class="logo">
+            <h2>Campus Summer</h2>
+            <div class="user-type admin">Admin</div>
+            <form id="loginForm">
+                <label for="adminCode">Admin Kodu:</label>
+                <input type="text" id="adminCode" name="adminCode" required>
+
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" required>
+
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+
+                <button type="submit" class="login-btn">Giriş</button>
+            </form>
+        </div>
+
+        <div class="announcement-panel">
+            <h3>🔐 ADMIN PANELİ</h3>
+            <p>
+                <strong>Yönetim Paneli:</strong> Bu panelden tüm sistem ayarlarına erişebilir, 
+                kullanıcıları, dersleri ve tüm içerikleri yönetebilirsiniz.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = `${window.location.origin}/api`;
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+
+            const adminCode = document.getElementById('adminCode').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminCode, password })
+                });
+
+                const data = await response.json();
+                console.log("Admin giriş yanıtı:", {
+                    status: response.status,
+                    body: data,
+                });
+
+                if (response.ok && data.success) {
+                    successDiv.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    setTimeout(() => {
+                        window.location.href = '../admin-panel/admin-panel.html';
+                    }, 1000);
+                } else {
+                    let errorMsg = data.message || 'Giriş sırasında bir hata oluştu';
+                    
+                    // Özel hata mesajları
+                    if (response.status === 401) {
+                        errorMsg = 'Admin kodu veya şifre hatalı. Eğer henüz admin kaydı yoksa, terminal\'de "npm run create-admin" komutunu çalıştırın.';
+                    } else if (response.status === 0 || !response.ok) {
+                        errorMsg = 'Backend sunucusuna bağlanılamadı. Lütfen backend sunucusunun çalıştığından emin olun.';
+                    }
+                    
+                    errorDiv.textContent = errorMsg;
+                }
+            } catch (error) {
+                console.error('Giriş hatası:', error);
+                errorDiv.textContent = 'Sunucuya bağlanılamadı. Backend sunucusunun çalıştığından emin olun. Hata: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
+
