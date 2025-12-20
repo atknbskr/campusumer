@@ -84,6 +84,20 @@
                         <label for="description">Açıklama</label>
                         <textarea id="description" name="description" rows="4"></textarea>
                     </div>
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="applicationDeadline">📅 Başvuru Son Tarihi</label>
+                            <input type="date" id="applicationDeadline" name="applicationDeadline" value="2026-06-30">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">🎯 Başlangıç Tarihi</label>
+                            <input type="date" id="startDate" name="startDate" value="2026-07-01">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">🏁 Bitiş Tarihi</label>
+                            <input type="date" id="endDate" name="endDate" value="2026-08-31">
+                        </div>
+                    </div>
                     <button type="submit" class="submit-btn">Ders Ekle</button>
                     <div id="courseFormMessage" class="form-message"></div>
                 </form>
@@ -208,7 +222,10 @@
                     courseName: document.getElementById('courseName').value.trim(),
                     courseCode: document.getElementById('courseCode').value.trim() || null,
                     category: document.getElementById('category').value || null,
-                    description: document.getElementById('description').value.trim() || null
+                    description: document.getElementById('description').value.trim() || null,
+                    applicationDeadline: document.getElementById('applicationDeadline').value || null,
+                    startDate: document.getElementById('startDate').value || null,
+                    endDate: document.getElementById('endDate').value || null
                 };
 
                 console.log('Form Data:', formData);
@@ -380,6 +397,17 @@
                 const isMyCourse = currentUser && currentUser.userType === 'academician';
                 const isStudent = currentUser && currentUser.userType === 'student';
 
+                // Tarih formatlama
+                const formatDate = (dateStr) => {
+                    if (!dateStr) return 'Belirtilmemiş';
+                    const date = new Date(dateStr);
+                    return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                };
+
+                const deadlineDate = course.application_deadline ? new Date(course.application_deadline) : null;
+                const today = new Date();
+                const isExpired = deadlineDate && deadlineDate < today;
+
                 card.innerHTML = `
                     <div class="ders-icon">
                         <span>${icon}</span>
@@ -387,7 +415,15 @@
                     <h3>${course.course_name}</h3>
                     ${course.course_code ? `<p class="course-code">${course.course_code}</p>` : ''}
                     ${isMyCourse ? `<p style="color: #28a745; font-weight: bold; font-size: 0.9em; margin: 5px 0;">✓ Sizin Dersiniz</p>` : ''}
+                    ${isExpired ? `<p style="color: #dc3545; font-weight: bold; font-size: 0.9em; margin: 5px 0;">⚠️ Başvuru Süresi Geçmiş</p>` : ''}
                     <p>${course.description || 'Açıklama bulunmuyor'}</p>
+                    ${course.application_deadline ? `
+                        <div class="course-dates" style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9em;">
+                            <p style="margin: 5px 0;"><strong>📅 Başvuru Son:</strong> ${formatDate(course.application_deadline)}</p>
+                            ${course.start_date ? `<p style="margin: 5px 0;"><strong>🎯 Başlangıç:</strong> ${formatDate(course.start_date)}</p>` : ''}
+                            ${course.end_date ? `<p style="margin: 5px 0;"><strong>🏁 Bitiş:</strong> ${formatDate(course.end_date)}</p>` : ''}
+                        </div>
+                    ` : ''}
                     <div class="ders-stats">
                         <span class="stat-item">🏫 ${course.university_count || 0} Üniversite</span>
                         <span class="stat-item">👥 ${course.student_count || 0} Öğrenci</span>
@@ -397,9 +433,14 @@
                         ${isMyCourse ? `
                             <button class="delete-btn" onclick="deleteCourse(${course.id})" style="background: #dc3545;">🗑️ Dersi Sil</button>
                         ` : ''}
-                        ${isStudent ? `
+                        ${isStudent && !isExpired ? `
                             <button class="favorite-btn" id="fav-${course.id}" onclick="toggleFavorite(${course.id})">
                                 <span class="fav-icon">♡</span> Favoriye Ekle
+                            </button>
+                        ` : ''}
+                        ${isStudent && isExpired ? `
+                            <button class="favorite-btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                ⏰ Başvuru Süresi Doldu
                             </button>
                         ` : ''}
                     </div>
