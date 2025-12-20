@@ -217,20 +217,6 @@
                                 <label>Website</label>
                                 <input type="url" id="universityWebsite" placeholder="https://...">
                             </div>
-                            <div class="form-group">
-                                <label>Logo URL</label>
-                                <input type="url" id="universityLogo" placeholder="https://...">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>İletişim Email</label>
-                                <input type="email" id="universityEmail">
-                            </div>
-                            <div class="form-group">
-                                <label>İletişim Telefon</label>
-                                <input type="tel" id="universityPhone">
-                            </div>
                         </div>
                         <div class="form-group">
                             <label>Açıklama</label>
@@ -686,9 +672,6 @@
                 name: document.getElementById('universityName').value.trim(),
                 city: document.getElementById('universityCity').value.trim() || null,
                 website: document.getElementById('universityWebsite').value.trim() || null,
-                logoUrl: document.getElementById('universityLogo').value.trim() || null,
-                contactEmail: document.getElementById('universityEmail').value.trim() || null,
-                contactPhone: document.getElementById('universityPhone').value.trim() || null,
                 description: document.getElementById('universityDescription').value.trim() || null
             };
 
