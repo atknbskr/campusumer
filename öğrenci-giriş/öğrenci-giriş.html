@@ -34,20 +34,50 @@
 
       <div class="announcement-panel">
         <h3>📢 DUYURULAR</h3>
-        <h2 class="red-text italic">ÖĞRENCİLERİN DİKKATİNE</h2>
-        <p>
-          <strong>1.</strong> Kişisel bilgilerinizin güvenliği için
-          <a href="#" class="link">Öğrenci Bilgi Sistemi şifrenizi</a>
-          güncellemeniz önemlidir. <br />
-          <strong>2.</strong> Kişisel bilgilerinizin güvenliği için
-          <a href="#" class="link">Öğrenci Bilgi Sistemi şifrenizi</a>
-          güncellemeniz önemlidir.
-        </p>
+        <div id="announcementsContainer">
+          <p style="text-align: center; color: #666;">Duyurular yükleniyor...</p>
+        </div>
       </div>
     </div>
 
     <script>
       const API_URL = `${window.location.origin}/api`;
+
+      // Duyuruları yükle
+      async function loadAnnouncements() {
+        try {
+          const response = await fetch(`${API_URL}/announcements?targetAudience=student`);
+          const data = await response.json();
+
+          const container = document.getElementById("announcementsContainer");
+
+          if (data.success && data.announcements.length > 0) {
+            container.innerHTML = data.announcements
+              .map((announcement, index) => {
+                const priorityClass = 
+                  announcement.priority === 3 ? "urgent" : 
+                  announcement.priority === 2 ? "important" : "";
+                
+                return `
+                  <div class="announcement-item ${priorityClass}">
+                    <h2 class="${announcement.priority >= 2 ? 'red-text italic' : ''}">${announcement.title}</h2>
+                    <p><strong>${index + 1}.</strong> ${announcement.content}</p>
+                  </div>
+                `;
+              })
+              .join("");
+          } else {
+            container.innerHTML = '<p style="text-align: center; color: #666;">Şu anda duyuru bulunmamaktadır.</p>';
+          }
+        } catch (error) {
+          console.error("Duyuru yükleme hatası:", error);
+          document.getElementById("announcementsContainer").innerHTML = 
+            '<p style="text-align: center; color: #999;">Duyurular yüklenemedi.</p>';
+        }
+      }
+
+      // Sayfa yüklendiğinde duyuruları getir
+      window.addEventListener("DOMContentLoaded", loadAnnouncements);
 
       document
         .getElementById("loginForm")

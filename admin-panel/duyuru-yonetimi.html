@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyuru Yönetimi - Campus Summer</title>
+    <link rel="stylesheet" href="admin-panel.css">
+    <style>
+        .announcements-container {
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 2rem;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .announcements-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .announcement-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .announcement-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .announcement-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-priority-1 {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-priority-2 {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-priority-3 {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-target {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .announcement-content {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .announcement-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .announcement-meta {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ee5a5a;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn-cancel, .btn-save {
+            flex: 1;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-cancel:hover {
+            background: #dee2e6;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .error-message, .success-message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="announcements-container">
+        <div class="page-header">
+            <h1>📢 Duyuru Yönetimi</h1>
+            <button class="btn-add" id="btnAddAnnouncement">+ Yeni Duyuru</button>
+        </div>
+
+        <div id="announcementsGrid" class="announcements-grid">
+            <div class="loading">Duyurular yükleniyor...</div>
+        </div>
+    </div>
+
+    <!-- Duyuru Ekleme/Düzenleme Modalı -->
+    <div class="modal-overlay" id="announcementModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Yeni Duyuru</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form class="modal-form" id="announcementForm">
+                <div id="formError" class="error-message" style="display: none;"></div>
+                <div id="formSuccess" class="success-message" style="display: none;"></div>
+
+                <div class="form-group">
+                    <label for="title">Başlık *</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">İçerik *</label>
+                    <textarea id="content" name="content" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="targetAudience">Hedef Kitle *</label>
+                        <select id="targetAudience" name="targetAudience" required>
+                            <option value="student">Öğrenciler</option>
+                            <option value="academician">Akademisyenler</option>
+                            <option value="all">Herkes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Öncelik *</label>
+                        <select id="priority" name="priority" required>
+                            <option value="1">Normal</option>
+                            <option value="2">Önemli</option>
+                            <option value="3">Acil</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="isActive">Durum *</label>
+                    <select id="isActive" name="isActive" required>
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCancel">İptal</button>
+                    <button type="submit" class="btn-save">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = `${window.location.origin}/api`;
+        let currentEditId = null;
+
+        // Token ve yetki kontrolü
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token || !user || (user.userType !== 'admin' && user.userType !== 'academician')) {
+            alert('Bu sayfaya erişim yetkiniz yok!');
+            window.location.href = '../website-giriş-sayfası/website-giriş-sayfası.html';
+        }
+
+        // Duyuruları yükle
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch(`${API_URL}/announcements/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                const grid = document.getElementById('announcementsGrid');
+
+                if (data.success && data.announcements.length > 0) {
+                    grid.innerHTML = data.announcements.map(announcement => `
+                        <div class="announcement-card">
+                            <div class="announcement-header">
+                                <h3 class="announcement-title">${announcement.title}</h3>
+                                <div class="announcement-badges">
+                                    <span class="badge badge-priority-${announcement.priority}">
+                                        ${announcement.priority === 1 ? 'Normal' : announcement.priority === 2 ? 'Önemli' : 'Acil'}
+                                    </span>
+                                    <span class="badge badge-target">
+                                        ${announcement.targetAudience === 'student' ? 'Öğrenciler' : 
+                                          announcement.targetAudience === 'academician' ? 'Akademisyenler' : 'Herkes'}
+                                    </span>
+                                    <span class="badge ${announcement.isActive ? 'badge-active' : 'badge-inactive'}">
+                                        ${announcement.isActive ? 'Aktif' : 'Pasif'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="announcement-content">
+                                ${announcement.content}
+                            </div>
+                            <div class="announcement-footer">
+                                <div class="announcement-meta">
+                                    Oluşturan: ${announcement.createdBy} • ${new Date(announcement.createdAt).toLocaleDateString('tr-TR')}
+                                </div>
+                                <div class="announcement-actions">
+                                    <button class="btn-edit" onclick="editAnnouncement(${announcement.id})">Düzenle</button>
+                                    <button class="btn-delete" onclick="deleteAnnouncement(${announcement.id})">Sil</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div class="empty-state"><p>Henüz duyuru bulunmamaktadır.</p></div>';
+                }
+            } catch (error) {
+                console.error('Duyuru yükleme hatası:', error);
+                document.getElementById('announcementsGrid').innerHTML = 
+                    '<div class="empty-state"><p>Duyurular yüklenirken bir hata oluştu.</p></div>';
+            }
+        }
+
+        // Modal işlemleri
+        const modal = document.getElementById('announcementModal');
+        const form = document.getElementById('announcementForm');
+
+        document.getElementById('btnAddAnnouncement').addEventListener('click', () => {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Yeni Duyuru';
+            form.reset();
+            document.getElementById('formError').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'none';
+            modal.classList.add('active');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        document.getElementById('btnCancel').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Duyuru düzenle
+        window.editAnnouncement = async (id) => {
+            try {
+                const response = await fetch(`${API_URL}/announcements/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                const announcement = data.announcements.find(a => a.id === id);
+
+                if (announcement) {
+                    currentEditId = id;
+                    document.getElementById('modalTitle').textContent = 'Duyuru Düzenle';
+                    document.getElementById('title').value = announcement.title;
+                    document.getElementById('content').value = announcement.content;
+                    document.getElementById('targetAudience').value = announcement.targetAudience;
+                    document.getElementById('priority').value = announcement.priority;
+                    document.getElementById('isActive').value = announcement.isActive.toString();
+                    document.getElementById('formError').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'none';
+                    modal.classList.add('active');
+                }
+            } catch (error) {
+                console.error('Duyuru yükleme hatası:', error);
+                alert('Duyuru yüklenirken bir hata oluştu.');
+            }
+        };
+
+        // Duyuru sil
+        window.deleteAnnouncement = async (id) => {
+            if (!confirm('Bu duyuruyu silmek istediğinizden emin misiniz?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/announcements/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Duyuru başarıyla silindi!');
+                    loadAnnouncements();
+                } else {
+                    alert(data.message || 'Duyuru silinirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Duyuru silme hatası:', error);
+                alert('Duyuru silinirken bir hata oluştu.');
+            }
+        };
+
+        // Form gönder
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                priority: parseInt(document.getElementById('priority').value),
+                isActive: document.getElementById('isActive').value === 'true'
+            };
+
+            try {
+                const url = currentEditId 
+                    ? `${API_URL}/announcements/${currentEditId}`
+                    : `${API_URL}/announcements`;
+                
+                const method = currentEditId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('formSuccess').textContent = data.message;
+                    document.getElementById('formSuccess').style.display = 'block';
+                    document.getElementById('formError').style.display = 'none';
+                    
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        loadAnnouncements();
+                    }, 1500);
+                } else {
+                    document.getElementById('formError').textContent = data.message;
+                    document.getElementById('formError').style.display = 'block';
+                    document.getElementById('formSuccess').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Duyuru kaydetme hatası:', error);
+                document.getElementById('formError').textContent = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+                document.getElementById('formError').style.display = 'block';
+                document.getElementById('formSuccess').style.display = 'none';
+            }
+        });
+
+        // Sayfa yüklendiğinde duyuruları getir
+        window.addEventListener('DOMContentLoaded', loadAnnouncements);
+    </script>
+</body>
+</html>
+
