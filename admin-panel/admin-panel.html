@@ -354,8 +354,8 @@
                                 <label>Tür *</label>
                                 <select id="universityType" required>
                                     <option value="">Seçiniz</option>
-                                    <option value="Devlet">Devlet</option>
-                                    <option value="Özel">Özel</option>
+                                    <option value="devlet">Devlet</option>
+                                    <option value="özel">Özel</option>
                                 </select>
                             </div>
                         </div>
@@ -396,8 +396,8 @@
                                 <label>Tür *</label>
                                 <select id="editUniversityType" required>
                                     <option value="">Seçiniz</option>
-                                    <option value="Devlet">Devlet</option>
-                                    <option value="Özel">Özel</option>
+                                    <option value="devlet">Devlet</option>
+                                    <option value="özel">Özel</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1073,17 +1073,19 @@
                     `;
                     
                     data.universities.forEach(uni => {
-                        const typeClass = uni.type === 'Devlet' ? 'badge-success' : uni.type === 'Özel' ? 'badge-info' : 'badge-secondary';
+                        const normalizedType = (uni.type || 'devlet').toLowerCase();
+                        const typeClass = normalizedType === 'devlet' ? 'badge-success' : normalizedType === 'özel' ? 'badge-info' : 'badge-secondary';
+                        const typeDisplay = normalizedType === 'devlet' ? 'Devlet' : normalizedType === 'özel' ? 'Özel' : uni.type || '-';
                         html += `
                             <tr>
                                 <td>${uni.id}</td>
                                 <td>${uni.name}</td>
                                 <td>${uni.city || '-'}</td>
-                                <td><span class="badge ${typeClass}">${uni.type || '-'}</span></td>
+                                <td><span class="badge ${typeClass}">${typeDisplay}</span></td>
                                 <td>${uni.website ? `<a href="${uni.website}" target="_blank">Link</a>` : '-'}</td>
                                 <td>${uni.contact_email || uni.contact_phone || '-'}</td>
                                 <td>
-                                    <button onclick="editUniversity(${uni.id}, '${(uni.name || '').replace(/'/g, "\\'")}', '${uni.city || ''}', '${uni.website || ''}', '${uni.type || ''}', '${(uni.description || '').replace(/'/g, "\\'").replace(/\n/g, ' ')}')" class="edit-btn">Düzenle</button>
+                                    <button onclick="editUniversity(${uni.id}, '${(uni.name || '').replace(/'/g, "\\'")}', '${uni.city || ''}', '${uni.website || ''}', '${normalizedType}', '${(uni.description || '').replace(/'/g, "\\'").replace(/\n/g, ' ')}')" class="edit-btn">Düzenle</button>
                                     <button onclick="deleteUniversity(${uni.id})" class="delete-btn">Sil</button>
                                 </td>
                             </tr>

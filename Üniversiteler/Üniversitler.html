@@ -358,18 +358,23 @@
         // Üniversite kartı oluştur
         function createUniversityCard(uni) {
             const card = document.createElement('div');
+            // Type'ı normalize et (büyük/küçük harf duyarlılığını kaldır)
+            const normalizedType = (uni.type || 'devlet').toLowerCase();
             card.className = 'universite-card';
-            card.setAttribute('data-type', uni.type || 'devlet');
+            card.setAttribute('data-type', normalizedType);
 
             // Kısaltma oluştur
             const shortName = uni.name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 4);
 
-            // Tip adını al
-            const typeName = {
+            // Tip adını al (hem Türkçe hem İngilizce değerleri destekle)
+            const typeMapping = {
                 'devlet': 'Devlet',
                 'vakif': 'Vakıf',
+                'vakıf': 'Vakıf',
+                'özel': 'Özel',
                 'ozel': 'Özel'
-            }[uni.type] || 'Devlet';
+            };
+            const typeName = typeMapping[normalizedType] || 'Devlet';
 
             card.innerHTML = `
                 ${isAdmin ? `<button class="delete-btn" onclick="deleteUniversity(${uni.id}, '${uni.name}')" title="Üniversiteyi Sil">🗑️</button>` : ''}

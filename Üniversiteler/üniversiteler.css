@@ -856,8 +856,14 @@ footer {
     background: linear-gradient(45deg, #28a745, #20c997);
 }
 
-.universite-badge.vakif {
+.universite-badge.vakif,
+.universite-badge.vakıf {
     background: linear-gradient(45deg, #fd7e14, #ffc107);
+}
+
+.universite-badge.ozel,
+.universite-badge.özel {
+    background: linear-gradient(45deg, #17a2b8, #00bcd4);
 }
 
 /* Üniversite Logo */
