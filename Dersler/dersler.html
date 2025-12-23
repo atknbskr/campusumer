@@ -1169,7 +1169,7 @@
                             </div>
                         ` : ''}
                     </div>
-                    ${!isMyCourse && course.academician_name ? `<p class="academician-name">Öğretmen: ${course.academician_name}</p>` : ''}
+                    ${!isMyCourse && course.academician_name ? `<p class="academician-name">Öğretmen: ${course.academician_title ? course.academician_title + ' ' : ''}${course.academician_name}</p>` : ''}
                     <div class="course-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         ${isMyCourse ? `
                             <button class="edit-btn" onclick="editCourse(${course.id})" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; min-width: 120px;">✏️ Düzenle</button>
@@ -1563,22 +1563,26 @@
 
             // Akademisyen bilgileri
             let academicianHTML = '';
-            // Backend'den academician_name ve academician_email geliyor
-            if (course.academician_name || course.academician_email) {
+            // Backend'den academician_name, academician_email ve academician_title geliyor
+            const academicianTitle = course.academician_title || course.academician?.title || '';
+            const academicianName = course.academician_name || course.academician?.full_name || '';
+            const academicianEmail = course.academician_email || course.academician?.email || '';
+            
+            if (academicianName || academicianEmail) {
                 academicianHTML = `
                     <div class="detail-section">
                         <h3>👨‍🏫 Dersi Veren Akademisyen</h3>
                         <div class="academician-card">
                             <div class="academician-name">
-                                ${course.academician_name || 'Belirtilmemiş'}
+                                ${academicianTitle ? `<span style="font-weight: 600; color: #667eea;">${academicianTitle}</span> ` : ''}${academicianName || 'Belirtilmemiş'}
                             </div>
                             <div class="academician-info">
-                                ${course.academician_email ? `
+                                ${academicianEmail ? `
                                     <div class="academician-info-item">
                                         <span>📧</span>
                                         <div>
                                             <strong>E-posta:</strong><br>
-                                            <a href="mailto:${course.academician_email}" style="color: #667eea; text-decoration: none; font-weight: 600;">${course.academician_email}</a>
+                                            <a href="mailto:${academicianEmail}" style="color: #667eea; text-decoration: none; font-weight: 600;">${academicianEmail}</a>
                                         </div>
                                     </div>
                                 ` : ''}

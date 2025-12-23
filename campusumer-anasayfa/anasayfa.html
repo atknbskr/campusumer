@@ -481,7 +481,7 @@
             </div>
             <div class="course-info">
               ${course.university_name ? `<p><strong>🏛️ Üniversite:</strong> ${course.university_name}</p>` : ''}
-              ${course.academician_name ? `<p><strong>👨‍🏫 Akademisyen:</strong> ${course.academician_name}</p>` : ''}
+              ${course.academician_name ? `<p><strong>👨‍🏫 Akademisyen:</strong> ${course.academician_title ? course.academician_title + ' ' : ''}${course.academician_name}</p>` : ''}
               ${course.start_date ? `<p><strong>🎯 Başlangıç:</strong> ${formatDate(course.start_date)}</p>` : ''}
               ${course.end_date ? `<p><strong>🏁 Bitiş:</strong> ${formatDate(course.end_date)}</p>` : ''}
               ${course.credits ? `<p><strong>📚 Kredi:</strong> ${course.credits}</p>` : ''}

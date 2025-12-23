@@ -40,6 +40,19 @@
             <option value="">Üniversite seçin...</option>
           </select>
 
+          <label for="title">Ünvan: *</label>
+          <select id="title" name="title" required>
+            <option value="">Ünvan seçin...</option>
+            <option value="Prof. Dr.">Prof. Dr.</option>
+            <option value="Doç. Dr.">Doç. Dr.</option>
+            <option value="Dr. Öğr. Üyesi">Dr. Öğr. Üyesi</option>
+            <option value="Öğr. Gör. Dr.">Öğr. Gör. Dr.</option>
+            <option value="Öğr. Gör.">Öğr. Gör.</option>
+            <option value="Arş. Gör. Dr.">Arş. Gör. Dr.</option>
+            <option value="Arş. Gör.">Arş. Gör.</option>
+            <option value="Dr.">Dr.</option>
+          </select>
+
           <label for="password">Şifre:</label>
           <input
             type="password"
@@ -114,6 +127,7 @@
           const email = document.getElementById("email").value.trim();
           const username = document.getElementById("username").value.trim();
           const universityId = document.getElementById("university").value;
+          const title = document.getElementById("title").value;
           const password = document.getElementById("password").value;
           const passwordConfirm =
             document.getElementById("passwordConfirm").value;
@@ -121,6 +135,12 @@
           // Üniversite kontrolü
           if (!universityId) {
             errorDiv.textContent = "Lütfen bir üniversite seçin!";
+            return;
+          }
+
+          // Ünvan kontrolü
+          if (!title) {
+            errorDiv.textContent = "Lütfen bir ünvan seçin!";
             return;
           }
 
@@ -147,6 +167,7 @@
                   email,
                   username,
                   universityId: parseInt(universityId),
+                  title,
                   password,
                 }),
               }

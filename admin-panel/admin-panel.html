@@ -173,6 +173,20 @@
                                 <label>Kullanıcı Adı</label>
                                 <input type="text" id="editAcademicianUsername" readonly>
                             </div>
+                            <div class="form-group">
+                                <label>Ünvan *</label>
+                                <select id="editAcademicianTitle" required>
+                                    <option value="">Ünvan seçin...</option>
+                                    <option value="Prof. Dr.">Prof. Dr.</option>
+                                    <option value="Doç. Dr.">Doç. Dr.</option>
+                                    <option value="Dr. Öğr. Üyesi">Dr. Öğr. Üyesi</option>
+                                    <option value="Öğr. Gör. Dr.">Öğr. Gör. Dr.</option>
+                                    <option value="Öğr. Gör.">Öğr. Gör.</option>
+                                    <option value="Arş. Gör. Dr.">Arş. Gör. Dr.</option>
+                                    <option value="Arş. Gör.">Arş. Gör.</option>
+                                    <option value="Dr.">Dr.</option>
+                                </select>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="submit-btn">Güncelle</button>
                                 <button type="button" onclick="closeEditAcademicianModal()" class="cancel-btn">İptal</button>
@@ -1052,12 +1066,13 @@
         }
 
         // Academician edit functions
-        function editAcademician(id, firstName, lastName, email, username) {
+        function editAcademician(id, firstName, lastName, email, username, title) {
             document.getElementById('editAcademicianUserId').value = id;
             document.getElementById('editAcademicianFirstName').value = firstName;
             document.getElementById('editAcademicianLastName').value = lastName;
             document.getElementById('editAcademicianEmail').value = email;
             document.getElementById('editAcademicianUsername').value = username;
+            document.getElementById('editAcademicianTitle').value = title || '';
             document.getElementById('editAcademicianModal').style.display = 'flex';
         }
 
@@ -1073,7 +1088,8 @@
             const formData = {
                 firstName: document.getElementById('editAcademicianFirstName').value.trim(),
                 lastName: document.getElementById('editAcademicianLastName').value.trim(),
-                email: document.getElementById('editAcademicianEmail').value.trim()
+                email: document.getElementById('editAcademicianEmail').value.trim(),
+                title: document.getElementById('editAcademicianTitle').value || null
             };
 
             const messageDiv = document.getElementById('editAcademicianMessage');
@@ -1557,6 +1573,7 @@
                                     <th>ID</th>
                                     <th>Ad Soyad</th>
                                     <th>Email</th>
+                                    <th>Ünvan</th>
                                     <th>Kullanıcı Adı</th>
                                     <th>Üniversite</th>
                                     <th>Kayıt Tarihi</th>
@@ -1567,11 +1584,13 @@
                     `;
                     
                     data.academicians.forEach(academician => {
+                        const titleEscaped = (academician.title || '').replace(/'/g, "\\'");
                         html += `
                             <tr>
                                 <td>${academician.user_id}</td>
                                 <td>${academician.first_name} ${academician.last_name}</td>
                                 <td>${academician.email}</td>
+                                <td><span class="badge badge-info">${academician.title || '-'}</span></td>
                                 <td><span class="badge badge-info">${academician.username}</span></td>
                                 <td>
                                     ${academician.university_name 
@@ -1580,7 +1599,7 @@
                                 </td>
                                 <td>${new Date(academician.created_at).toLocaleDateString('tr-TR')}</td>
                                 <td>
-                                    <button onclick="editAcademician(${academician.user_id}, '${academician.first_name}', '${academician.last_name}', '${academician.email}', '${academician.username}')" class="edit-btn">Düzenle</button>
+                                    <button onclick="editAcademician(${academician.user_id}, '${academician.first_name}', '${academician.last_name}', '${academician.email}', '${academician.username}', '${titleEscaped}')" class="edit-btn">Düzenle</button>
                                     <button onclick="openAssignUniversityModal(${academician.user_id}, '${academician.first_name} ${academician.last_name}', ${academician.university_id || 'null'})" class="edit-btn">Üniversite</button>
                                     <button onclick="deleteUser(${academician.user_id}, 'academician')" class="delete-btn">Sil</button>
                                 </td>
