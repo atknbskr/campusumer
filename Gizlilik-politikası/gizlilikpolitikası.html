@@ -2,58 +2,409 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Campus Summer</title>
-    <link rel="stylesheet" href="anasayfa.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizlilik Politikası - Campus Summer</title>
+    <link rel="stylesheet" href="../campusumer-anasayfa/anasayfa.css">
+    <style>
+        .privacy-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
 
+        .privacy-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .privacy-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .privacy-content {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+
+        .privacy-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .privacy-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .privacy-card h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .privacy-card h3 {
+            color: #495057;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .privacy-card p {
+            color: #495057;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .privacy-card ul {
+            color: #495057;
+            line-height: 2;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .privacy-card li {
+            margin-bottom: 10px;
+        }
+
+        .privacy-card strong {
+            color: #212529;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .contact-info h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .contact-info p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .privacy-section h1 {
+                font-size: 2rem;
+            }
+
+            .privacy-card {
+                padding: 25px;
+            }
+
+            .privacy-card h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div>Veri Sorumlusu
-Biz, Şirket, veri sorumlusu olarak, bu gizlilik ve kişisel verilerin korunması politikası ile ziyaret etmekte olduğunuz İnternet sitesi kapsamında hangi kişisel verilerinizin hangi amaçlarla işleneceği, işlenen verilerin kimlerle ve hangi sebeplerle paylaşılabileceği, veri işleme yöntemimiz ve hukuki sebepleri ile; işlenen verilerinize ilişkin haklarınızın neler olduğu hususunda siz kullanıcılarımızı aydınlatmayı amaçlıyoruz.
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="../campusumer-anasayfa/2.3.logo.png" alt="Campus Summer Logo">
+                <span>Campus Summer</span>
+            </div>
 
-Toplanan Kişisel Veriler
-Bu İnternet sitesi tarafından toplanan kişisel verileriniz:
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="../campusumer-anasayfa/anasayfa.html" class="nav-link">Anasayfa</a>
+                </div>
+                <div class="nav-item">
+                    <a href="../Dersler/dersler.html" class="nav-link">Dersler</a>
+                </div>
+                <div class="nav-item">
+                    <a href="../Üniversiteler/Üniversitler.html" class="nav-link">Üniversiteler</a>
+                </div>
+                <div class="nav-item">
+                    <a href="../Fakülteler/fakülteler.html" class="nav-link">Fakülteler</a>
+                </div>
+                <div class="nav-item">
+                    <a href="../Hakkımızda/Hakkımızda.html" class="nav-link">Hakkımızda</a>
+                </div>
+                <div class="nav-item">
+                    <a href="../İletişim/iletisim.html" class="nav-link">İletişim</a>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-Cihaz bilgileri
+    <section class="privacy-section">
+        <div class="container">
+            <h1>🔒 Gizlilik Politikası</h1>
+            <p>Campus Summer olarak kişisel verilerinizin korunması bizim için önemlidir</p>
+        </div>
+    </section>
 
-IP adresi
+    <section class="privacy-content">
+        <div class="privacy-container">
+            <div class="privacy-card">
+                <h2>1. Veri Sorumlusu</h2>
+                <p>
+                    <strong>Campus Summer</strong> olarak, bu gizlilik ve kişisel verilerin korunması politikası ile 
+                    ziyaret etmekte olduğunuz internet sitesi kapsamında hangi kişisel verilerinizin hangi amaçlarla 
+                    işleneceği, işlenen verilerin kimlerle ve hangi sebeplerle paylaşılabileceği, veri işleme yöntemimiz 
+                    ve hukuki sebepleri ile; işlenen verilerinize ilişkin haklarınızın neler olduğu hususunda siz 
+                    kullanıcılarımızı aydınlatmayı amaçlıyoruz.
+                </p>
+                <p>
+                    Bu politika, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") ve ilgili mevzuat 
+                    kapsamında hazırlanmıştır.
+                </p>
+            </div>
 
-Kullanılan Servisler
-Altyapı servisleri
-Cloudflare: Cloudflare, site güvenliği ve performans optimizasyonu için kullanılmaktadır. DDoS koruması, SSL sertifikası ve CDN hizmetleri sağlar.
+            <div class="privacy-card">
+                <h2>2. Toplanan Kişisel Veriler</h2>
+                <p>
+                    Bu internet sitesi tarafından toplanan kişisel verileriniz aşağıdaki kategorilerde yer almaktadır:
+                </p>
+                
+                <h3>2.1. Kimlik Bilgileri</h3>
+                <ul>
+                    <li>Ad, soyad</li>
+                    <li>E-posta adresi</li>
+                    <li>Öğrenci numarası (öğrenciler için)</li>
+                    <li>Kullanıcı adı (akademisyenler için)</li>
+                </ul>
 
-DigitalOcean: DigitalOcean, altyapı ve barındırma hizmetleri için kullanılmaktadır. Verileriniz DigitalOcean sunucularında saklanabilir.
+                <h3>2.2. İletişim Bilgileri</h3>
+                <ul>
+                    <li>E-posta adresi</li>
+                    <li>Telefon numarası (varsa)</li>
+                </ul>
 
-Analitik ve izleme
-Google Analytics: Google Analytics, ziyaretçi davranışlarını ve site kullanımını analiz etmek için kullanılmaktadır. Bu hizmet, ziyaretçi trafiği, etkileşimler ve kullanıcı davranışları hakkında detaylı raporlar sağlar.
-Verilerin İşlenme Amaçları
-Kişisel verileriniz, bu İnternet sitesi tarafından amacına uygun hizmet sunulabilmesi, yasal yükümlülüklerin yerine getirilmesi, hizmet kalitesinin artırılması, iletişim, güvenlik ve gerektiğinde yasal merciler ile bilgi paylaşılabilmesi amaçları ile işlenmektedir. Kişisel verileriniz, bu sayılan amaçlar dışında kullanılmayacaktır.
+                <h3>2.3. Eğitim Bilgileri</h3>
+                <ul>
+                    <li>Üniversite bilgisi</li>
+                    <li>Fakülte bilgisi</li>
+                    <li>Ders kayıt bilgileri</li>
+                    <li>Başvuru bilgileri</li>
+                </ul>
 
-Verilerin Aktarılması
-Bu İnternet sitesi tarafından toplanan kişisel verileriniz, yasal zorunluluklar haricinde, açık rızanız olmadan üçüncü kişiler ile paylaşılmaz. Ancak hizmet sağlayıcılarımız, iş ortaklarımız ve yasal merciler ile, hizmetin sağlanması ve yasal yükümlülüklerin yerine getirilmesi amaçlarıyla gerekli olduğu ölçüde paylaşılabilir.
+                <h3>2.4. Teknik Bilgiler</h3>
+                <ul>
+                    <li>IP adresi</li>
+                    <li>Tarayıcı bilgileri</li>
+                    <li>Cihaz bilgileri</li>
+                    <li>Çerez (Cookie) verileri</li>
+                </ul>
+            </div>
 
-Çerez Kullanımı
-Bu İnternet sitesi çerez kullanmaktadır. Çerezler, bir İnternet sayfası ziyaret edildiğinde kullanıcılara ilişkin birtakım bilgilerin kullanıcıların terminal cihazlarında depolanmasına izin veren düşük boyutlu zengin metin biçimli text formatlarıdır. Çerezler, bir İnternet sitesini ilk ziyaretiniz sırasında tarayıcınız aracılığıyla cihazınıza depolanabilir ve aynı siteyi aynı cihazla tekrar ziyaret ettiğinizde, tarayıcınız cihazınızda site adına kayıtlı bir çerez olup olmadığını kontrol eder. Eğer kayıt var ise, kaydın içindeki veriyi ziyaret etmekte olduğunuz İnternet sitesine iletir. Bu sayede İnternet sitesi, sizin daha önceki ziyaretinizi tespit eder ve size iletilecek içeriği ona göre belirler.
+            <div class="privacy-card">
+                <h2>3. Kullanılan Servisler ve Üçüncü Taraf Entegrasyonları</h2>
+                
+                <h3>3.1. Altyapı Servisleri</h3>
+                <p>
+                    <strong>Cloudflare:</strong> Site güvenliği ve performans optimizasyonu için kullanılmaktadır. 
+                    DDoS koruması, SSL sertifikası ve CDN hizmetleri sağlar.
+                </p>
+                <p>
+                    <strong>DigitalOcean / Neon:</strong> Altyapı ve barındırma hizmetleri için kullanılmaktadır. 
+                    Verileriniz bu sunucularda saklanabilir.
+                </p>
 
-Yasal Haklarınız
-KVKK Kapsamında Haklarınız
-6698 sayılı KVKK madde 11 uyarınca herkes, veri sorumlusuna başvurarak kendisiyle ilgili aşağıda yer alan taleplerde bulunma hakkına sahiptir:
+                <h3>3.2. Analitik ve İzleme</h3>
+                <p>
+                    <strong>Google Analytics:</strong> Google Analytics, ziyaretçi davranışlarını ve site kullanımını 
+                    analiz etmek için kullanılmaktadır. Bu hizmet, ziyaretçi trafiği, etkileşimler ve kullanıcı 
+                    davranışları hakkında detaylı raporlar sağlar.
+                </p>
+            </div>
 
-Kişisel verilerinin işlenip işlenmediğini öğrenme.
+            <div class="privacy-card">
+                <h2>4. Verilerin İşlenme Amaçları</h2>
+                <p>
+                    Kişisel verileriniz, aşağıdaki amaçlarla işlenmektedir:
+                </p>
+                <ul>
+                    <li>Platform hizmetlerinin sunulması ve yönetilmesi</li>
+                    <li>Kullanıcı hesaplarının oluşturulması ve yönetilmesi</li>
+                    <li>Ders başvurularının işlenmesi ve yönetilmesi</li>
+                    <li>Akademisyen-öğrenci iletişiminin sağlanması</li>
+                    <li>Bildirimlerin gönderilmesi</li>
+                    <li>Yasal yükümlülüklerin yerine getirilmesi</li>
+                    <li>Hizmet kalitesinin artırılması ve geliştirilmesi</li>
+                    <li>Güvenlik önlemlerinin alınması</li>
+                    <li>İstatistiksel analizlerin yapılması</li>
+                    <li>Gerektiğinde yasal merciler ile bilgi paylaşılması</li>
+                </ul>
+                <p>
+                    Kişisel verileriniz, bu sayılan amaçlar dışında kullanılmayacaktır.
+                </p>
+            </div>
 
-Kişisel verileri işlenmişse buna ilişkin bilgi talep etme.
+            <div class="privacy-card">
+                <h2>5. Verilerin Aktarılması</h2>
+                <p>
+                    Bu internet sitesi tarafından toplanan kişisel verileriniz, yasal zorunluluklar haricinde, 
+                    açık rızanız olmadan üçüncü kişiler ile paylaşılmaz. Ancak:
+                </p>
+                <ul>
+                    <li>Hizmet sağlayıcılarımız (Cloudflare, DigitalOcean, Neon vb.) ile, hizmetin sağlanması 
+                        amaçlarıyla gerekli olduğu ölçüde paylaşılabilir.</li>
+                    <li>Yasal merciler ile, yasal yükümlülüklerin yerine getirilmesi amaçlarıyla paylaşılabilir.</li>
+                    <li>İş ortaklarımız ile, hizmet kalitesinin artırılması amaçlarıyla sınırlı ölçüde paylaşılabilir.</li>
+                </ul>
+            </div>
 
-Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme.
+            <div class="privacy-card">
+                <h2>6. Çerez (Cookie) Kullanımı</h2>
+                <p>
+                    Bu internet sitesi çerez kullanmaktadır. Çerezler, bir internet sayfası ziyaret edildiğinde 
+                    kullanıcılara ilişkin birtakım bilgilerin kullanıcıların terminal cihazlarında depolanmasına 
+                    izin veren düşük boyutlu zengin metin biçimli text formatlarıdır.
+                </p>
+                <p>
+                    Çerezler, bir internet sitesini ilk ziyaretiniz sırasında tarayıcınız aracılığıyla cihazınıza 
+                    depolanabilir ve aynı siteyi aynı cihazla tekrar ziyaret ettiğinizde, tarayıcınız cihazınızda 
+                    site adına kayıtlı bir çerez olup olmadığını kontrol eder. Eğer kayıt var ise, kaydın içindeki 
+                    veriyi ziyaret etmekte olduğunuz internet sitesine iletir.
+                </p>
+                <h3>Kullandığımız Çerez Türleri:</h3>
+                <ul>
+                    <li><strong>Zorunlu Çerezler:</strong> Platformun çalışması için gerekli çerezler (oturum yönetimi vb.)</li>
+                    <li><strong>Performans Çerezleri:</strong> Site performansını analiz etmek için kullanılan çerezler</li>
+                    <li><strong>Fonksiyonel Çerezler:</strong> Kullanıcı tercihlerini hatırlamak için kullanılan çerezler</li>
+                </ul>
+            </div>
 
-Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme.
+            <div class="privacy-card">
+                <h2>7. Veri Güvenliği</h2>
+                <p>
+                    Kişisel verilerinizin güvenliği bizim için önemlidir. Bu nedenle:
+                </p>
+                <ul>
+                    <li>Verileriniz SSL/TLS şifreleme ile korunmaktadır</li>
+                    <li>Güvenli sunucu altyapısı kullanılmaktadır</li>
+                    <li>Düzenli güvenlik güncellemeleri yapılmaktadır</li>
+                    <li>Erişim kontrolleri ve yetkilendirme mekanizmaları uygulanmaktadır</li>
+                    <li>Düzenli yedekleme işlemleri gerçekleştirilmektedir</li>
+                </ul>
+            </div>
 
-Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme.
+            <div class="privacy-card">
+                <h2>8. KVKK Kapsamında Haklarınız</h2>
+                <p>
+                    6698 sayılı KVKK madde 11 uyarınca herkes, veri sorumlusuna başvurarak kendisiyle ilgili 
+                    aşağıda yer alan taleplerde bulunma hakkına sahiptir:
+                </p>
+                <ul>
+                    <li>Kişisel verilerinin işlenip işlenmediğini öğrenme</li>
+                    <li>Kişisel verileri işlenmişse buna ilişkin bilgi talep etme</li>
+                    <li>Kişisel verilerin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme</li>
+                    <li>Yurt içinde veya yurt dışında kişisel verilerin aktarıldığı üçüncü kişileri bilme</li>
+                    <li>Kişisel verilerin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme</li>
+                    <li>KVKK madde 7 ile öngörülen şartlar çerçevesinde kişisel verilerin silinmesini veya yok edilmesini isteme</li>
+                    <li>Düzeltme, silme ve yok etme talepleri neticesinde yapılan işlemlerin, kişisel verilerin 
+                        aktarıldığı üçüncü kişilere bildirilmesini isteme</li>
+                    <li>İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle 
+                        kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme</li>
+                    <li>Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması hâlinde 
+                        zararın giderilmesini talep etme</li>
+                </ul>
+            </div>
 
-KVKK madde 7 ile öngörülen şartlar çerçevesinde kişisel verilerin silinmesini veya yok edilmesini isteme.
+            <div class="privacy-card">
+                <h2>9. Veri Saklama Süresi</h2>
+                <p>
+                    Kişisel verileriniz, mevzuatta öngörülen saklama süreleri ve işleme amaçlarının gerektirdiği 
+                    süre boyunca saklanmaktadır. Bu sürelerin sona ermesi veya işleme amacının ortadan kalkması 
+                    durumunda, verileriniz KVKK'ya uygun şekilde silinmekte veya anonim hale getirilmektedir.
+                </p>
+            </div>
 
-Düzeltme, silme ve yok edilme talepleri neticesinde yapılan işlemlerin, kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme.
+            <div class="privacy-card">
+                <h2>10. Politika Değişiklikleri</h2>
+                <p>
+                    Bu gizlilik politikası, yasal düzenlemelerdeki değişiklikler veya hizmetlerimizdeki 
+                    güncellemeler nedeniyle güncellenebilir. Önemli değişiklikler durumunda, kullanıcılarımız 
+                    e-posta veya platform üzerinden bilgilendirilecektir.
+                </p>
+            </div>
 
-İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kişinin kendisi aleyhine bir sonucun ortaya çıkmasına itiraz etme.
+            <div class="contact-info">
+                <h3>📧 İletişim ve Başvuru</h3>
+                <p>
+                    KVKK kapsamındaki haklarınızı kullanmak veya gizlilik politikamız hakkında sorularınız için 
+                    bizimle iletişime geçebilirsiniz:
+                </p>
+                <p><strong>E-posta:</strong> <a href="mailto:atakan.baskir@std.hku.edu.tr">atakan.baskir@std.hku.edu.tr</a></p>
+                <p><strong>E-posta:</strong> <a href="mailto:yusuf.tiken@std.hku.edu.tr">yusuf.tiken@std.hku.edu.tr</a></p>
+                <p><strong>Telefon:</strong> +90 506 536 1780</p>
+                <p><strong>Telefon:</strong> +90 533 133 2930</p>
+                <p><strong>Adres:</strong> Gaziantep, Türkiye</p>
+            </div>
 
-Kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğraması hâlinde zararın giderilmesini talep etme.</div>
+            <div class="last-updated">
+                <p>Son Güncelleme: 23 Aralık 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Campus Summer</h3>
+                    <p>
+                        Türkiye'nin en kapsamlı yaz dersleri takip platformu. Akademik
+                        hedeflerinize ulaşmanın en kolay yolu.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Bağlantılar</h3>
+                    <a href="../campusumer-anasayfa/anasayfa.html">Ana Sayfa</a>
+                    <a href="../Üniversiteler/Üniversitler.html">Üniversiteler</a>
+                    <a href="../Dersler/dersler.html">Dersler</a>
+                    <a href="../Hakkımızda/Hakkımızda.html">Hakkımızda</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Destek</h3>
+                    <a href="../İletişim/iletisim.html">İletişim</a>
+                    <a href="gizlilikpolitikası.html">Gizlilik Politikası</a>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <p>📧 atakan.baskir@std.hku.edu.tr</p>
+                    <p>📧 yusuf.tiken@std.hku.edu.tr</p>
+                    <p>📞 +90 506 536 1780</p>
+                    <p>📞 +90 533 133 2930</p>
+                    <p>📍 Gaziantep, Türkiye</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Campus Summer. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
