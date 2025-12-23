@@ -65,15 +65,15 @@
                         
                         <div class="stats-grid">
                             <div class="stat-card">
-                                <div class="stat-number">200+</div>
+                                <div class="stat-number" id="universityCount">-</div>
                                 <div class="stat-label">Üniversite</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-number">500+</div>
+                                <div class="stat-number" id="courseCount">-</div>
                                 <div class="stat-label">Yaz Dersi</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-number">50K+</div>
+                                <div class="stat-number" id="studentCount">-</div>
                                 <div class="stat-label">Mutlu Öğrenci</div>
                             </div>
                         </div>
@@ -115,7 +115,9 @@
                 <div class="footer-section">
                     <h3>İletişim</h3>
                     <p>📧 atakan.baskir@std.hku.edu.tr</p>
+                    <p>📧 yusuf.tiken@std.hku.edu.tr</p>
                     <p>📞 +90 506 536 1780</p>
+                    <p>📞 +90 533 133 2930</p>
                     <p>📍 Gaziantep, Türkiye</p>
                 </div>
             </div>
@@ -124,6 +126,50 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // İstatistikleri yükle
+        async function loadStatistics() {
+            try {
+                const API_URL = `${window.location.origin}/api`;
+                const response = await fetch(`${API_URL}/universities/statistics`);
+                const data = await response.json();
+                
+                if (data.success && data.statistics) {
+                    const stats = data.statistics;
+                    
+                    // Üniversite sayısı
+                    const universityCount = stats.universities || 0;
+                    document.getElementById('universityCount').textContent = universityCount > 0 ? `${universityCount}` : '0';
+                    
+                    // Ders sayısı
+                    const courseCount = stats.courses || 0;
+                    document.getElementById('courseCount').textContent = courseCount > 0 ? `${courseCount}` : '0';
+                    
+                    // Öğrenci sayısı
+                    const studentCount = stats.students || 0;
+                    document.getElementById('studentCount').textContent = studentCount > 0 ? `${studentCount}` : '0';
+                } else {
+                    console.error('İstatistikler yüklenemedi:', data.message);
+                    // Varsayılan değerleri göster
+                    document.getElementById('universityCount').textContent = '0';
+                    document.getElementById('courseCount').textContent = '0';
+                    document.getElementById('studentCount').textContent = '0';
+                }
+            } catch (error) {
+                console.error('İstatistikler yüklenirken hata:', error);
+                // Hata durumunda varsayılan değerleri göster
+                document.getElementById('universityCount').textContent = '0';
+                document.getElementById('courseCount').textContent = '0';
+                document.getElementById('studentCount').textContent = '0';
+            }
+        }
+        
+        // Sayfa yüklendiğinde istatistikleri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatistics();
+        });
+    </script>
 
 </body>
 </html>
