@@ -57,8 +57,12 @@
                             <span class="detail-value" id="profileType">-</span>
                         </div>
                         <div class="profile-detail-item">
-                            <span class="detail-label">Okul Numarası:</span>
+                            <span class="detail-label" id="profileDetailLabel">Okul Numarası:</span>
                             <span class="detail-value" id="profileStudentNumber">-</span>
+                        </div>
+                        <div class="profile-detail-item" id="profileUniversityItem" style="display: none;">
+                            <span class="detail-label">Üniversite:</span>
+                            <span class="detail-value" id="profileUniversity">-</span>
                         </div>
                     </div>
                     <div class="profile-actions">
@@ -262,8 +266,30 @@
             document.getElementById("profileType").textContent = 
                 user.userType === "student" ? "Öğrenci" : 
                 user.userType === "academician" ? "Akademisyen" : "Admin";
-            document.getElementById("profileStudentNumber").textContent = 
-                user.studentNumber || user.username || user.adminCode || "-";
+            
+            // Kullanıcı tipine göre detay etiketini ve değerini ayarla
+            const detailLabel = document.getElementById("profileDetailLabel");
+            const detailValue = document.getElementById("profileStudentNumber");
+            const universityItem = document.getElementById("profileUniversityItem");
+            const universityValue = document.getElementById("profileUniversity");
+            
+            if (user.userType === "academician") {
+                detailLabel.textContent = "Kullanıcı Adı:";
+                detailValue.textContent = user.username || "-";
+                // Üniversite bilgisini göster
+                if (user.universityName) {
+                    universityValue.textContent = user.universityName;
+                    universityItem.style.display = "flex";
+                }
+            } else if (user.userType === "student") {
+                detailLabel.textContent = "Okul Numarası:";
+                detailValue.textContent = user.studentNumber || "-";
+                universityItem.style.display = "none";
+            } else {
+                detailLabel.textContent = "Admin Kodu:";
+                detailValue.textContent = user.adminCode || "-";
+                universityItem.style.display = "none";
+            }
         }
 
         // Profil dropdown toggle
@@ -300,7 +326,15 @@
         // Üniversiteleri yükle
         async function loadUniversities() {
             try {
+                // currentUser'ı tekrar kontrol et (checkAuth'dan sonra güncellenmiş olabilir)
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (token && user.userType) {
+                currentUser = user;
+            }
+            
                 console.log('Üniversiteler yükleniyor...', `${API_URL}/universities`);
+                console.log('Mevcut kullanıcı:', currentUser);
                 const response = await fetch(`${API_URL}/universities`);
                 
                 // Response durumunu kontrol et
@@ -322,18 +356,29 @@
                     
                     console.log('Yüklenen üniversite sayısı:', allUniversities.length);
                     
-                    // İstatistikleri TÜM üniversitelere göre güncelle (filtrelenmeden önce)
-                    updateStats(allUniversities);
-                    
                     // Akademisyen ise sadece kendi üniversitesini göster
                     if (currentUser && currentUser.userType === 'academician' && currentUser.universityId) {
-                        displayedUniversities = allUniversities.filter(uni => uni.id === currentUser.universityId);
+                        // universityId'yi integer'a çevir ve karşılaştır
+                        const userUniversityId = parseInt(currentUser.universityId);
+                        displayedUniversities = allUniversities.filter(uni => parseInt(uni.id) === userUniversityId);
+                        
+                        console.log('Akademisyen üniversite ID:', userUniversityId);
+                        console.log('Filtrelenmiş üniversiteler:', displayedUniversities);
                         
                         // Subtitle'ı güncelle
                         if (displayedUniversities.length > 0) {
                             document.getElementById('sectionSubtitle').textContent = 
                                 `${displayedUniversities[0].name} - Akademisyen ve Öğrenci Sayıları`;
+                        } else {
+                            document.getElementById('sectionSubtitle').textContent = 
+                                'Üniversite bilgisi bulunamadı';
                         }
+                        
+                        // Akademisyen için sadece kendi üniversitesinin istatistiklerini göster
+                        updateStats(displayedUniversities);
+                    } else {
+                        // Diğer kullanıcılar için tüm üniversitelerin istatistiklerini göster
+                        updateStats(allUniversities);
                     }
                     
                     displayUniversities(displayedUniversities);
@@ -384,12 +429,23 @@
             grid.innerHTML = '';
 
             if (universities.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
-                        <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">Henüz üniversite eklenmemiş.</p>
-                        ${isAdmin ? '<p style="color: #999;">Yeni üniversite eklemek için yukarıdaki butona tıklayın.</p>' : ''}
-                    </div>
-                `;
+                let message = '';
+                if (currentUser && currentUser.userType === 'academician') {
+                    message = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                            <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">Üniversite bilgisi bulunamadı.</p>
+                            <p style="color: #999;">Lütfen yönetici ile iletişime geçin.</p>
+                        </div>
+                    `;
+                } else {
+                    message = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                            <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">Henüz üniversite eklenmemiş.</p>
+                            ${isAdmin ? '<p style="color: #999;">Yeni üniversite eklemek için yukarıdaki butona tıklayın.</p>' : ''}
+                        </div>
+                    `;
+                }
+                grid.innerHTML = message;
                 return;
             }
 
