@@ -978,9 +978,9 @@
                     
                     data.academicians.forEach(academician => {
                         const option = document.createElement('option');
-                        option.value = academician.user_id;
+                        option.value = academician.academician_id || academician.id;
                         option.textContent = `${academician.first_name} ${academician.last_name}${academician.university_name ? ' - ' + academician.university_name : ''}`;
-                        if (academician.user_id == currentValue) {
+                        if ((academician.academician_id || academician.id) == currentValue) {
                             option.selected = true;
                         }
                         select.appendChild(option);
@@ -1045,13 +1045,16 @@
         async function updateCourse(event) {
             event.preventDefault();
             const courseId = document.getElementById('editCourseId').value;
+            const academicianIdValue = document.getElementById('editAcademicianId').value;
+            const universityIdValue = document.getElementById('editUniversityId').value;
+            
             const formData = {
                 courseName: document.getElementById('editCourseName').value.trim(),
                 courseCode: document.getElementById('editCourseCode').value.trim() || null,
                 category: document.getElementById('editCategory').value || null,
                 description: document.getElementById('editDescription').value.trim() || null,
-                academicianId: document.getElementById('editAcademicianId').value || null,
-                universityId: document.getElementById('editUniversityId').value || null
+                academicianId: academicianIdValue && academicianIdValue !== '' ? parseInt(academicianIdValue) : null,
+                universityId: universityIdValue && universityIdValue !== '' ? parseInt(universityIdValue) : null
             };
 
             const messageDiv = document.getElementById('editCourseMessage');
