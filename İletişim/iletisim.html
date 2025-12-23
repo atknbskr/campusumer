@@ -513,55 +513,79 @@
     </footer>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        const API_URL = `${window.location.origin}/api`;
+        
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const form = e.target;
             const formData = new FormData(form);
             const messageDiv = document.getElementById('formMessage');
+            const submitBtn = form.querySelector('.submit-btn');
             
             // Form verilerini al
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const phone = formData.get('phone') || 'Belirtilmemiş';
-            const recipient = formData.get('recipient');
-            const subject = formData.get('subject');
-            const message = formData.get('message');
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone') || '',
+                recipient: formData.get('recipient'),
+                subject: formData.get('subject'),
+                message: formData.get('message')
+            };
             
-            // E-posta adreslerini belirle
-            let emailTo = '';
-            if (recipient === 'both') {
-                emailTo = 'atakan.baskir@std.hku.edu.tr,yusuf.tiken@std.hku.edu.tr';
-            } else {
-                emailTo = recipient;
+            // Validasyon
+            if (!data.name || !data.email || !data.recipient || !data.subject || !data.message) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = '❌ Lütfen tüm zorunlu alanları doldurun.';
+                messageDiv.style.display = 'block';
+                return;
             }
             
-            // Mailto linki oluştur
-            const emailBody = `Merhaba,
-
-${message}
-
----
-Gönderen Bilgileri:
-Ad Soyad: ${name}
-E-posta: ${email}
-Telefon: ${phone}`;
+            // Butonu devre dışı bırak ve loading durumu göster
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Gönderiliyor...';
+            messageDiv.style.display = 'none';
             
-            const mailtoLink = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-            
-            // E-posta istemcisini aç
-            window.location.href = mailtoLink;
-            
-            // Başarı mesajı göster
-            messageDiv.className = 'form-message success';
-            messageDiv.textContent = '✅ E-posta istemciniz açılıyor. Mesajınızı göndermek için e-posta istemcinizde "Gönder" butonuna tıklayın.';
-            messageDiv.style.display = 'block';
-            
-            // Formu temizle
-            setTimeout(() => {
-                form.reset();
-                messageDiv.style.display = 'none';
-            }, 5000);
+            try {
+                const response = await fetch(`${API_URL}/contact/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Başarı mesajı
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = '✅ ' + result.message;
+                    messageDiv.style.display = 'block';
+                    
+                    // Formu temizle
+                    form.reset();
+                    
+                    // 5 saniye sonra mesajı gizle
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 5000);
+                } else {
+                    // Hata mesajı
+                    messageDiv.className = 'form-message error';
+                    messageDiv.textContent = '❌ ' + (result.message || 'Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+                    messageDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('İletişim formu hatası:', error);
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = '❌ Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
+                messageDiv.style.display = 'block';
+            } finally {
+                // Butonu tekrar etkinleştir
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 Mesaj Gönder';
+            }
         });
     </script>
 </body>
